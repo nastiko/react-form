@@ -1,25 +1,32 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 export default function Form() {
-    const [formData, setFormData] = React.useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
+    const schema = yup.object().shape({
+        firstName: yup.string().required("First name is required"),
+        lastName: yup.string().required(),
+        email: yup.string().email().required(),
+        password: yup.string().required(),
+        phone: yup.string().required()
+            .matches(/^((0|\+44)7\d{3}\s?\d{6})$/, 'Provide a valid UK phone number')
+            .min(11, 'Phone number must be at least 11 digits')
+            .max(13, 'Phone number must not exceed 13 digits'),
+        description: yup.string().required(),
+        agreeTerms: yup.bool().oneOf([true], 'You must accept the terms and conditions').required()
     });
 
-    function handleChange(event) {
-        setFormData(prevState => {
-            return {
-                ...prevState,
-                [event.target.name]: event.target.value,
-            }
-        })
-    }
+    const { register, handleSubmit, formState: {errors} } = useForm({
+        resolver: yupResolver(schema)
+    });
+
+    const onSubmit = (data) => console.log(data);
 
     return (
         <>
-            <form className="order-2 md:order-1 border-[0px] md:border-[1px] border-y-transparent border-l-transparent border-r-[#dee2e6] pr-0 md:pr-16 mb-12">
+            <form onSubmit={handleSubmit(onSubmit)}
+                  className="order-2 md:order-1 border-[0px] md:border-[1px] border-y-transparent border-l-transparent border-r-[#dee2e6] pr-0 md:pr-16 mb-12">
                 <div className="grid md:grid-cols-2 md:gap-6">
                     <div className="mb-4">
                         <input
@@ -27,10 +34,9 @@ export default function Form() {
                             focus:border-[1px] focus:border-x-transparent focus:border-t-transparent focus:border-b-[#000000] focus:ring-0 focus:outline-none"
                             type="text"
                             placeholder="First name"
-                            onChange = {handleChange}
-                            name="firstName"
-                            value={formData.firstName}
+                            {...register("firstName")}
                         />
+                        <p className="text-[12px] text-[#ff3860] mt-2">{errors.firstName?.message}</p>
                     </div>
                     <div className="mb-4">
                         <input
@@ -38,9 +44,7 @@ export default function Form() {
                             focus:border-[1px] focus:border-x-transparent focus:border-t-transparent focus:border-b-[#000000] focus:ring-0 focus:outline-none"
                             type="text"
                             placeholder="Last name"
-                            onChange = {handleChange}
-                            name="lastName"
-                            value={formData.lastName}
+                            {...register("lastName")}
                         />
                     </div>
                 </div>
@@ -50,9 +54,7 @@ export default function Form() {
                         focus:border-[1px] focus:border-x-transparent focus:border-t-transparent focus:border-b-[#000000] focus:ring-0 focus:outline-none"
                         type="email"
                         placeholder="Email"
-                        onChange = {handleChange}
-                        name="email"
-                        value={formData.email}
+                        {...register("email")}
                     />
                 </div>
                 <div className="mb-4">
@@ -61,9 +63,7 @@ export default function Form() {
                         focus:border-[1px] focus:border-x-transparent focus:border-t-transparent focus:border-b-[#000000] focus:ring-0 focus:outline-none"
                         type="phone"
                         placeholder="Phone"
-                        onChange = {handleChange}
-                        name="phone"
-                        value={formData.phone}
+                        {...register("phone")}
                     />
                 </div>
                 <div className="mb-4">
@@ -73,13 +73,16 @@ export default function Form() {
                         placeholder="Write your message"
                         cols="30"
                         rows="7"
-                        maxLength="250">
+                        maxLength="250"
+                        {...register("description")}
+                    >
                     </textarea>
                 </div>
                 <div className="mb-4">
                     <input
                         className="cursor-pointer mr-2"
                         type="checkbox"
+                        {...register("agreeTerms")}
                     />
                     <label>I understood the policy company</label>
                 </div>

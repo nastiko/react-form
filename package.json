@@ -2,7 +2,7 @@
   "name": "react-form",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/nastiko/react-form",
+  "homepage": "https://nastiko.github.io/react-form",
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
     "@testing-library/jest-dom": "^5.17.0",

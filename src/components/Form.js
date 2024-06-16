@@ -3,7 +3,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-export default function Form() {
+export default function Form(props) {
+    console.log(props);
     const schema = yup.object().shape({
         firstName: yup.string().required("First name is required"),
         lastName: yup.string().required("Last name is required"),
@@ -96,7 +97,7 @@ export default function Form() {
                         type="checkbox"
                         {...register("agreeTerms")}
                     />
-                    <label>I understood the <a className="underline" href="#">policy company</a></label>
+                    <label>I understood the <a className="underline" href={props.src}>policy of the company</a></label>
                     <p className="text-[12px] text-[#ff3860]">{errors.agreeTerms?.message}</p>
                 </div>
                 <button type="submit" className="w-max h-[55px] bg-[#eb4d55] text-[16px] leading-[24px] text-[#ffffff] font-normal border-[1px] border-[#eb4d55] transition-all py-2 px-6 hover:bg-[#e72b34] hover:border-[#e61f29]">Send message</button>
